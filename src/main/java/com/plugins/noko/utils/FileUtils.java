@@ -3,9 +3,7 @@ package com.plugins.noko.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * Created by david.yun on 2017/5/6.
@@ -49,5 +47,41 @@ public class FileUtils {
             }
         }
         return result;
+    }
+
+    public static void writeFile(String filePath, String data, boolean isAppened) {
+        File file = new File(filePath);
+        writeFile(file, data, isAppened);
+    }
+
+    public static void writeFile(File file, String data, boolean isAppened) {
+        PrintWriter printWriter = null;
+        BufferedWriter bufferedWriter = null;
+        FileWriter fileWriter = null;
+        try {
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            fileWriter = new FileWriter(file, isAppened);
+            bufferedWriter = new BufferedWriter(fileWriter);
+            printWriter = new PrintWriter(bufferedWriter);
+            printWriter.write(data);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        } finally {
+            try {
+                if (printWriter != null) {
+                    printWriter.close();
+                }
+                if (bufferedWriter != null) {
+                    bufferedWriter.close();
+                }
+                if (fileWriter != null) {
+                    fileWriter.close();
+                }
+            } catch (IOException e) {
+                logger.error(e.getMessage());
+            }
+        }
     }
 }
